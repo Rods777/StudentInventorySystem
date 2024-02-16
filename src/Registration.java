@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -14,15 +15,17 @@ import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
 
 public class Registration extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField username;
-	private JTextField email;
-	private JPasswordField password;
-	private JPasswordField pre_password;
+	private JTextField txtUsername;
+	private JTextField txtEmail;
+	private JPasswordField txtPassword;
+	private JPasswordField txtPre_password;
+	private Login login;
 	
 	
 	// Declaring SQL classes
@@ -45,13 +48,11 @@ public class Registration extends JFrame {
 			conn = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
 			// Checks for Connection
 			if(conn != null) {
-				System.out.println("Connection Sucessfully!");
+				System.out.println("Sucessfully Connected to Database!");
 			}
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -68,7 +69,6 @@ public class Registration extends JFrame {
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
-					Connect();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,6 +80,7 @@ public class Registration extends JFrame {
 	 * Create the frame.
 	 */
 	public Registration() {
+		Connect();
 		setResizable(false);
 		setTitle("Sign Up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,54 +95,74 @@ public class Registration extends JFrame {
 		sidePanel.setBackground(new Color(0, 128, 128));
 		sidePanel.setBounds(0, 0, 228, 461);
 		contentPane.add(sidePanel);
+		sidePanel.setLayout(null);
+		
+		JLabel lblMema = new JLabel("Mema");
+		lblMema.setForeground(Color.WHITE);
+		lblMema.setFont(new Font("Gill Sans Ultra Bold", Font.PLAIN, 40));
+		lblMema.setBounds(0, 210, 228, 44);
+		lblMema.setHorizontalAlignment(JLabel.CENTER);
+		sidePanel.add(lblMema);
+		
+		JLabel lblInventory = new JLabel("Student Inventory System");
+		lblInventory.setFont(new Font("Rockwell Condensed", Font.BOLD, 20));
+		lblInventory.setForeground(new Color(222, 184, 135));
+		lblInventory.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInventory.setBounds(0, 265, 228, 36);
+		sidePanel.add(lblInventory);
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/img/student-icon.png"));
+		JLabel lblIcon = new JLabel(icon);
+		lblIcon.setBounds(58, 88, 116, 111);
+		sidePanel.add(lblIcon);
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Arial", Font.PLAIN, 15));
 		lblUsername.setBounds(253, 48, 87, 19);
 		contentPane.add(lblUsername);
 		
-		username = new JTextField();
-		username.setBounds(253, 78, 308, 30);
-		contentPane.add(username);
-		username.setColumns(10);
+		txtUsername = new JTextField();
+		txtUsername.setBounds(253, 78, 308, 30);
+		contentPane.add(txtUsername);
+		txtUsername.setColumns(10);
 		
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setFont(new Font("Arial", Font.PLAIN, 15));
 		lblEmail.setBounds(253, 119, 87, 19);
 		contentPane.add(lblEmail);
 		
-		email = new JTextField();
-		email.setColumns(10);
-		email.setBounds(253, 149, 308, 30);
-		contentPane.add(email);
+		txtEmail = new JTextField();
+		txtEmail.setColumns(10);
+		txtEmail.setBounds(253, 149, 308, 30);
+		contentPane.add(txtEmail);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Arial", Font.PLAIN, 15));
 		lblPassword.setBounds(253, 190, 87, 19);
 		contentPane.add(lblPassword);
 		
-		pre_password = new JPasswordField();
-		pre_password.setBounds(253, 220, 308, 30);
-		contentPane.add(pre_password);
+		txtPre_password = new JPasswordField();
+		txtPre_password.setBounds(253, 220, 308, 30);
+		contentPane.add(txtPre_password);
 		
 		JLabel lblReenterPassword = new JLabel("Re-Enter Password");
 		lblReenterPassword.setFont(new Font("Arial", Font.PLAIN, 15));
 		lblReenterPassword.setBounds(253, 261, 142, 19);
 		contentPane.add(lblReenterPassword);
 		
-		password = new JPasswordField();
-		password.setBounds(253, 291, 308, 30);
-		contentPane.add(password);
+		txtPassword = new JPasswordField();
+		txtPassword.setBounds(253, 291, 308, 30);
+		contentPane.add(txtPassword);
 		
 		JButton btnSignUp = new JButton("SIGN UP");
 		btnSignUp.setFont(new Font("Arial", Font.BOLD, 18));
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				String Username = username.getText();
-				String Email = email.getText();
-				String prePassword = new String(pre_password.getPassword());
-				String Password = new String(password.getPassword());
+				String Username = txtUsername.getText();
+				String Email = txtEmail.getText();
+				String prePassword = new String(txtPre_password.getPassword());
+				String Password = new String(txtPassword.getPassword());
 				
 				// Check Input Error
 				if(Username.equals("") || Email.equals("") || prePassword.equals("") || Password.equals("")) {
@@ -150,27 +171,29 @@ public class Registration extends JFrame {
 				else if(!Password.equals(prePassword)) {
 					JOptionPane.showMessageDialog(new JFrame(), "Passwords do not match", "Alert", JOptionPane.WARNING_MESSAGE);
 				} else {
-					
 					try {
 						prep_stmt = conn.prepareStatement(
 								"INSERT INTO admins (admin_username, admin_email, admin_password) VALUES (?, ?, ?)");
 						prep_stmt.setString(1, Username);
 						prep_stmt.setString(2, Email);
 						prep_stmt.setString(3, Password);
-						
 						int i = prep_stmt.executeUpdate();
+						// Checks if data inserted to database
 						if(i == 1) {
 							JOptionPane.showMessageDialog(new JFrame(), "You Successfully Registered");
-							username.setText("");
-							email.setText("");
-							pre_password.setText("");
-							password.setText("");
+							txtUsername.setText("");
+							txtEmail.setText("");
+							txtPre_password.setText("");
+							txtPassword.setText("");
+							login = new Login();				
+							login.setVisible(true);
+							login.setLocationRelativeTo(null);
+							dispose();
 						} else {
 							JOptionPane.showMessageDialog(new JFrame(), "Registration Error, Please Try Again!", "Alert", JOptionPane.WARNING_MESSAGE);
 						}
 
 					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}	
 				}	
@@ -192,6 +215,10 @@ public class Registration extends JFrame {
 		JButton btnSignIn = new JButton("Click Here");
 		btnSignIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				login = new Login();
+				login.setVisible(true);
+				login.setLocationRelativeTo(null);
+				dispose();
 			}
 		});
 		btnSignIn.setBorder(null);
