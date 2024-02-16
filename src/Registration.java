@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.*;
@@ -14,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
 
 public class Registration extends JFrame {
 
@@ -67,7 +69,6 @@ public class Registration extends JFrame {
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					
-					Connect();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -79,6 +80,7 @@ public class Registration extends JFrame {
 	 * Create the frame.
 	 */
 	public Registration() {
+		Connect();
 		setResizable(false);
 		setTitle("Sign Up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -93,6 +95,26 @@ public class Registration extends JFrame {
 		sidePanel.setBackground(new Color(0, 128, 128));
 		sidePanel.setBounds(0, 0, 228, 461);
 		contentPane.add(sidePanel);
+		sidePanel.setLayout(null);
+		
+		JLabel lblMema = new JLabel("Mema");
+		lblMema.setForeground(Color.WHITE);
+		lblMema.setFont(new Font("Gill Sans Ultra Bold", Font.PLAIN, 40));
+		lblMema.setBounds(0, 210, 228, 44);
+		lblMema.setHorizontalAlignment(JLabel.CENTER);
+		sidePanel.add(lblMema);
+		
+		JLabel lblInventory = new JLabel("Student Inventory System");
+		lblInventory.setFont(new Font("Rockwell Condensed", Font.BOLD, 20));
+		lblInventory.setForeground(new Color(222, 184, 135));
+		lblInventory.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInventory.setBounds(0, 265, 228, 36);
+		sidePanel.add(lblInventory);
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/img/student-icon.png"));
+		JLabel lblIcon = new JLabel(icon);
+		lblIcon.setBounds(58, 88, 116, 111);
+		sidePanel.add(lblIcon);
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -149,7 +171,6 @@ public class Registration extends JFrame {
 				else if(!Password.equals(prePassword)) {
 					JOptionPane.showMessageDialog(new JFrame(), "Passwords do not match", "Alert", JOptionPane.WARNING_MESSAGE);
 				} else {
-					
 					try {
 						prep_stmt = conn.prepareStatement(
 								"INSERT INTO admins (admin_username, admin_email, admin_password) VALUES (?, ?, ?)");
@@ -157,6 +178,7 @@ public class Registration extends JFrame {
 						prep_stmt.setString(2, Email);
 						prep_stmt.setString(3, Password);
 						int i = prep_stmt.executeUpdate();
+						// Checks if data inserted to database
 						if(i == 1) {
 							JOptionPane.showMessageDialog(new JFrame(), "You Successfully Registered");
 							txtUsername.setText("");

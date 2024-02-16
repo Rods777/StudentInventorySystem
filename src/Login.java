@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 
 public class Login extends JFrame {
 
@@ -35,7 +37,7 @@ public class Login extends JFrame {
 	private static final String dbUsername = "root";
 	private static final String dbPassword = "";
 	
-	public static void Connect() {
+	private static void Connect() {
 		try {
 			Class.forName(jdbcDriver);
 			conn = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
@@ -63,7 +65,7 @@ public class Login extends JFrame {
 					frame.setVisible(true);
 					frame.setLocationRelativeTo(null);
 					
-					Connect();
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -75,6 +77,7 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		Connect();
 		setTitle("Log In");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
@@ -83,11 +86,6 @@ public class Login extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JPanel sidePanel = new JPanel();
-		sidePanel.setBackground(new Color(0, 128, 128));
-		sidePanel.setBounds(356, 0, 228, 461);
-		contentPane.add(sidePanel);
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -114,34 +112,35 @@ public class Login extends JFrame {
 				String usernameTxt = txtUsername.getText();
 				String passwordTxt = new String(txtPassword.getPassword());
 				
+				// Check for empty fields
 				if(usernameTxt.equals("") || passwordTxt.equals("")) {
 					JOptionPane.showMessageDialog(new JFrame(), "Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
-				}
-				
-				try {
-					String query = "SELECT * FROM admins WHERE admin_username = ? AND admin_password = ?";
-					prep_stmt = conn.prepareStatement(query);
-					prep_stmt.setString(1, usernameTxt);
-					prep_stmt.setString(2, passwordTxt);
-					resultSet = prep_stmt.executeQuery();
-					
-					while(resultSet.next()) {
-						String username = resultSet.getString("admin_username");
-						String password = resultSet.getString("admin_password");
+				} else {
+					try {
+						prep_stmt = conn.prepareStatement("SELECT * FROM admins WHERE admin_username = ?");
+						prep_stmt.setString(1, usernameTxt);
+						resultSet = prep_stmt.executeQuery();
 						
-						if(!usernameTxt.equals(username) && !passwordTxt.equals(password)) {
-							JOptionPane.showMessageDialog(new JFrame(), "Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
+						// Checks if username exist
+						if(!resultSet.next()) {
+							JOptionPane.showMessageDialog(new JFrame(), "Username does not exist, Please sign up first!", "Error", JOptionPane.ERROR_MESSAGE);
 						} else {
-							JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!!");
+							String admin_password = resultSet.getString("admin_password");
+							// Checks if password is correct
+							if(!passwordTxt.equals(admin_password)) {
+								JOptionPane.showMessageDialog(new JFrame(), "Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+							} else {
+								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!!");
+							}
+							
 						}
-					}
-					
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+						
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(new JFrame(), "An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+				    }
 				}
-				
-			}
+			}	
 		});
 		btnSignIn.setForeground(Color.WHITE);
 		btnSignIn.setFont(new Font("Arial", Font.BOLD, 18));
@@ -175,5 +174,30 @@ public class Login extends JFrame {
 		btnSignUpHere.setBounds(194, 396, 79, 23);
 		btnSignUpHere.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		contentPane.add(btnSignUpHere);
+		
+		JPanel sidePanel = new JPanel();
+		sidePanel.setLayout(null);
+		sidePanel.setBackground(new Color(0, 128, 128));
+		sidePanel.setBounds(356, 0, 228, 461);
+		contentPane.add(sidePanel);
+		
+		JLabel lblMema = new JLabel("Mema");
+		lblMema.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMema.setForeground(Color.WHITE);
+		lblMema.setFont(new Font("Gill Sans Ultra Bold", Font.PLAIN, 40));
+		lblMema.setBounds(0, 210, 228, 44);
+		sidePanel.add(lblMema);
+		
+		JLabel lblInventory = new JLabel("Student Inventory System");
+		lblInventory.setHorizontalAlignment(SwingConstants.CENTER);
+		lblInventory.setForeground(new Color(222, 184, 135));
+		lblInventory.setFont(new Font("Rockwell Condensed", Font.BOLD, 20));
+		lblInventory.setBounds(0, 265, 228, 36);
+		sidePanel.add(lblInventory);
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/img/student-icon.png"));
+		JLabel lblIcon = new JLabel(icon);
+		lblIcon.setBounds(58, 88, 116, 111);
+		sidePanel.add(lblIcon);
 	}
 }
