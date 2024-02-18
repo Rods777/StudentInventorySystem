@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -26,36 +26,7 @@ public class Registration extends JFrame {
 	private JPasswordField txtPassword;
 	private JPasswordField txtPre_password;
 	private Login login;
-	
-	
-	// Declaring SQL classes
-	static Connection conn;
-	static PreparedStatement prep_stmt;
-	static ResultSet resultSet;
-	
-	// DB Credentials
-	private static final String jdbcDriver = "com.mysql.cj.jdbc.Driver";
-	private static final String dbName = "studentinventory";
-	private static final String dbURL = "jdbc:mysql://localhost:3306/" + dbName;
-	private static final String dbUsername = "root";
-	private static final String dbPassword = "";
-	
-	
-	// Connection to Database Method
-	public static void Connect() {
-		try {
-			Class.forName(jdbcDriver);
-			conn = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-			// Checks for Connection
-			if(conn != null) {
-				System.out.println("Sucessfully Connected to Database!");
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+	private static DBConnection connect = new DBConnection();
 	
 
 	/**
@@ -80,7 +51,6 @@ public class Registration extends JFrame {
 	 * Create the frame.
 	 */
 	public Registration() {
-		Connect();
 		setResizable(false);
 		setTitle("Sign Up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -172,12 +142,12 @@ public class Registration extends JFrame {
 					JOptionPane.showMessageDialog(new JFrame(), "Passwords do not match", "Alert", JOptionPane.WARNING_MESSAGE);
 				} else {
 					try {
-						prep_stmt = conn.prepareStatement(
+						connect.prep_stmt = connect.conn.prepareStatement(
 								"INSERT INTO admins (admin_username, admin_email, admin_password) VALUES (?, ?, ?)");
-						prep_stmt.setString(1, Username);
-						prep_stmt.setString(2, Email);
-						prep_stmt.setString(3, Password);
-						int i = prep_stmt.executeUpdate();
+						connect.prep_stmt.setString(1, Username);
+						connect.prep_stmt.setString(2, Email);
+						connect.prep_stmt.setString(3, Password);
+						int i = connect.prep_stmt.executeUpdate();
 						// Checks if data inserted to database
 						if(i == 1) {
 							JOptionPane.showMessageDialog(new JFrame(), "You Successfully Registered");

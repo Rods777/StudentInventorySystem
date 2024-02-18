@@ -5,13 +5,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.sql.*;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
@@ -24,35 +24,7 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
-	
-	// Declaring SQL classes
-	static Connection conn;
-	static PreparedStatement prep_stmt;
-	static ResultSet resultSet;
-	
-	// DB Credentials
-	private static final String jdbcDriver = "com.mysql.cj.jdbc.Driver";
-	private static final String dbName = "studentinventory";
-	private static final String dbURL = "jdbc:mysql://localhost:3306/" + dbName;
-	private static final String dbUsername = "root";
-	private static final String dbPassword = "";
-	
-	private static void Connect() {
-		try {
-			Class.forName(jdbcDriver);
-			conn = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
-			// Checks for Connection
-			if(conn != null) {
-				System.out.println("Sucessfully Connected to Database!");
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	private static DBConnection connect = new DBConnection(); // Database Connection Class
 	
 	/**
 	 * Launch the application.
@@ -65,7 +37,6 @@ public class Login extends JFrame {
 					frame.setVisible(true);
 					frame.setLocationRelativeTo(null);
 					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -77,7 +48,6 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
-		Connect();
 		setTitle("Log In");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
@@ -112,34 +82,33 @@ public class Login extends JFrame {
 				String usernameTxt = txtUsername.getText();
 				String passwordTxt = new String(txtPassword.getPassword());
 				
-				// Check for empty fields
-				if(usernameTxt.equals("") || passwordTxt.equals("")) {
-					JOptionPane.showMessageDialog(new JFrame(), "Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
-				} else {
-					try {
-						prep_stmt = conn.prepareStatement("SELECT * FROM admins WHERE admin_username = ?");
-						prep_stmt.setString(1, usernameTxt);
-						resultSet = prep_stmt.executeQuery();
+				try {
+					if(usernameTxt.equals("") || passwordTxt.equals("")) { // Check for empty fields
+						JOptionPane.showMessageDialog(new JFrame(), "Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
+					} else {
+						connect.prep_stmt = connect.conn.prepareStatement("SELECT * FROM admins WHERE admin_username = ?");
+						connect.prep_stmt.setString(1, usernameTxt);
+						connect.resultSet = connect.prep_stmt.executeQuery();
 						
 						// Checks if username exist
-						if(!resultSet.next()) {
+						if(!connect.resultSet.next()) {
 							JOptionPane.showMessageDialog(new JFrame(), "Username does not exist, Please sign up first!", "Error", JOptionPane.ERROR_MESSAGE);
 						} else {
-							String admin_password = resultSet.getString("admin_password");
+							String admin_password = connect.resultSet.getString("admin_password");
 							// Checks if password is correct
 							if(!passwordTxt.equals(admin_password)) {
 								JOptionPane.showMessageDialog(new JFrame(), "Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
 							} else {
 								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!!");
 							}
-							
 						}
+					}
 						
-					} catch (SQLException e1) {
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(new JFrame(), "An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
-				    }
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(new JFrame(), "An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
 				}
+				
 			}	
 		});
 		btnSignIn.setForeground(Color.WHITE);
