@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
 	// Declaring SQL classes
-	Connection conn;
+	Connection conn = null;
 	PreparedStatement prep_stmt;
 	ResultSet resultSet;
 	
@@ -34,6 +34,9 @@ public class DBConnection {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		    System.out.println("SQLException: " + e.getMessage());
+		    System.out.println("SQLState: " + e.getSQLState());
+		    System.out.println("VendorError: " + e.getErrorCode());
 		}
 	}
 }
