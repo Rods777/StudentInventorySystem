@@ -143,29 +143,57 @@ public class Registration extends JFrame {
 				} else {
 					try {
 						connect.prep_stmt = connect.conn.prepareStatement(
-								"INSERT INTO admins (admin_username, admin_email, admin_password) VALUES (?, ?, ?)");
+								"SELECT admin_username FROM admins WHERE admin_username = ? OR admin_email = ?");
 						connect.prep_stmt.setString(1, Username);
 						connect.prep_stmt.setString(2, Email);
-						connect.prep_stmt.setString(3, Password);
-						int i = connect.prep_stmt.executeUpdate();
-						// Checks if data inserted to database
-						if(i == 1) {
-							JOptionPane.showMessageDialog(new JFrame(), "You Successfully Registered");
-							txtUsername.setText("");
-							txtEmail.setText("");
-							txtPre_password.setText("");
-							txtPassword.setText("");
-							login = new Login();				
-							login.setVisible(true);
-							login.setLocationRelativeTo(null);
-							dispose();
+						connect.resultSet = connect.prep_stmt.executeQuery();
+						// Checks if username already exist
+						if(connect.resultSet.next()) {
+							JOptionPane.showMessageDialog(new JFrame(), 
+									"Username OR Email Already Exist!", "Alert", JOptionPane.WARNING_MESSAGE);
 						} else {
-							JOptionPane.showMessageDialog(new JFrame(), "Registration Error, Please Try Again!", "Alert", JOptionPane.WARNING_MESSAGE);
+							connect.prep_stmt = connect.conn.prepareStatement(
+									"INSERT INTO admins (admin_username, admin_email, admin_password) VALUES (?, ?, ?)");
+							connect.prep_stmt.setString(1, Username);
+							connect.prep_stmt.setString(2, Email);
+							connect.prep_stmt.setString(3, Password);
+							int row = connect.prep_stmt.executeUpdate();
+							// Checks if data inserted to database
+							if(row == 1) {
+								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Registered");
+								txtUsername.setText("");
+								txtEmail.setText("");
+								txtPre_password.setText("");
+								txtPassword.setText("");
+								login = new Login();				
+								login.setVisible(true);
+								login.setLocationRelativeTo(null);
+								dispose();
+							} else {
+								JOptionPane.showMessageDialog(new JFrame(),
+										"Registration Error, Please Try Again!", "Alert", JOptionPane.WARNING_MESSAGE);
+							}
 						}
-
 					} catch (SQLException e1) {
 						e1.printStackTrace();
-					}	
+					} finally {	
+						if(connect.resultSet != null || connect.prep_stmt != null) {
+							try {
+								connect.resultSet.close();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							connect.resultSet = null;
+							try {
+								connect.prep_stmt.close();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							connect.prep_stmt = null;
+						}
+					}
 				}	
 			}
 		});

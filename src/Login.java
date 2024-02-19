@@ -84,7 +84,8 @@ public class Login extends JFrame {
 				
 				try {
 					if(usernameTxt.equals("") || passwordTxt.equals("")) { // Check for empty fields
-						JOptionPane.showMessageDialog(new JFrame(), "Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(new JFrame(), 
+								"Please Fill out all Fields", "Alert", JOptionPane.WARNING_MESSAGE);
 					} else {
 						connect.prep_stmt = connect.conn.prepareStatement("SELECT * FROM admins WHERE admin_username = ?");
 						connect.prep_stmt.setString(1, usernameTxt);
@@ -92,21 +93,42 @@ public class Login extends JFrame {
 						
 						// Checks if username exist
 						if(!connect.resultSet.next()) {
-							JOptionPane.showMessageDialog(new JFrame(), "Username does not exist, Please sign up first!", "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(new JFrame(), 
+									"Username does not exist, Please sign up first!", "Error", JOptionPane.ERROR_MESSAGE);
 						} else {
 							String admin_password = connect.resultSet.getString("admin_password");
 							// Checks if password is correct
 							if(!passwordTxt.equals(admin_password)) {
-								JOptionPane.showMessageDialog(new JFrame(), "Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(new JFrame(), 
+										"Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
 							} else {
 								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!!");
+								connect.conn.close();
 							}
 						}
 					}
 						
 				} catch (SQLException e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(new JFrame(), "An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(new JFrame(), 
+							"An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+				} finally {	
+					if(connect.resultSet != null || connect.prep_stmt != null) {
+						try {
+							connect.resultSet.close();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						connect.resultSet = null;
+						try {
+							connect.prep_stmt.close();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						connect.prep_stmt = null;
+					}
 				}
 				
 			}	
