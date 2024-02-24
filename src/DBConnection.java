@@ -2,13 +2,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
+
 
 public class DBConnection {
 	// Declaring SQL classes
 	Connection conn = null;
 	PreparedStatement prep_stmt;
 	ResultSet resultSet;
+	ResultSetMetaData rsmd;
 	
 	// DB Credentials
 	private final String jdbcDriver = "com.mysql.cj.jdbc.Driver";
@@ -16,10 +21,7 @@ public class DBConnection {
 	private final String dbURL = "jdbc:mysql://localhost:3306/" + dbName;
 	private final String dbUsername = "root";
 	private final String dbPassword = "";
-	
-	DBConnection(){
-		Connect();
-	}
+
 	
 	void Connect(){
 		try {
@@ -37,6 +39,8 @@ public class DBConnection {
 		    System.out.println("SQLException: " + e.getMessage());
 		    System.out.println("SQLState: " + e.getSQLState());
 		    System.out.println("VendorError: " + e.getErrorCode());
+			JOptionPane.showMessageDialog(null, 
+					"Connection Error: Please Connect to Database First!", "Error!", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

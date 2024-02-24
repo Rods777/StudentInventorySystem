@@ -26,7 +26,7 @@ public class Registration extends JFrame {
 	private JPasswordField txtPassword;
 	private JPasswordField txtPre_password;
 	private Login login;
-	private static DBConnection connect = new DBConnection();
+	private DBConnection connect = new DBConnection();
 	
 
 	/**
@@ -51,6 +51,7 @@ public class Registration extends JFrame {
 	 * Create the frame.
 	 */
 	public Registration() {
+		connect.Connect();
 		setResizable(false);
 		setTitle("Sign Up");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

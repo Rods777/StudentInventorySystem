@@ -16,6 +16,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/img/icons-close.png</name>
+			<type>1</type>
+			<location>D:/eclipse-workspace/Java-Projects/StudentInventorySystem/src/img/icons-close.png</location>
+		</link>
+		<link>
 			<name>src/img/student-icon.png</name>
 			<type>1</type>
 			<location>D:/eclipse-workspace/Java-Projects/StudentInventorySystem/src/img/student-icon.png</location>

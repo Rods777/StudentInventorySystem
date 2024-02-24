@@ -24,7 +24,8 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUsername;
 	private JPasswordField txtPassword;
-	private static DBConnection connect = new DBConnection(); // Database Connection Class
+	private DBConnection connect = new DBConnection(); // Database Connection Class
+	
 	
 	/**
 	 * Launch the application.
@@ -48,6 +49,7 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		connect.Connect();
 		setTitle("Log In");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
