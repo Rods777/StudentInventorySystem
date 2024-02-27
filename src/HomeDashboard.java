@@ -6,11 +6,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Cursor;
 
 import javax.swing.JLabel;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,20 +24,46 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import modals.AddAdminModal;
+
 public class HomeDashboard extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField searchTxt;
-	private JTable adminTbl;
+	private JTable adminTbl = new JTable();
 	private DBConnection connect = new DBConnection();
 	
-	public void viewData() {
-		try {
+	public void readData() {
+		try {	
 			connect.prep_stmt = connect.conn.prepareStatement(
 					"SELECT * FROM admins");
 			connect.resultSet = connect.prep_stmt.executeQuery();
 			connect.rsmd = connect.resultSet.getMetaData();
+			DefaultTableModel model = (DefaultTableModel) adminTbl.getModel();
+			
+			// Setting Column Names
+			int cols = connect.rsmd.getColumnCount();
+			String[] colName = new String[cols];
+			for(int i = 0; i < cols; i++) {
+				colName[i] = connect.rsmd.getColumnName(i+1);
+			}
+			model.setColumnIdentifiers(colName);
+			
+			// Iterate each row
+			String admin_id, admin_username, admin_email, admin_password;
+			while(connect.resultSet.next()) {
+				admin_id = connect.resultSet.getString(1);
+				admin_username = connect.resultSet.getString(2);
+				admin_email = connect.resultSet.getString(3);
+				admin_password = connect.resultSet.getString(4);
+				
+				String[] row = {admin_id, admin_username, admin_email, admin_password};
+				model.addRow(row);
+			}
+			
+		    // Disable row reordering
+	        adminTbl.getTableHeader().setReorderingAllowed(false);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -58,6 +82,8 @@ public class HomeDashboard extends JFrame {
 					HomeDashboard frame = new HomeDashboard();
 					frame.setVisible(true);
 					frame.setLocationRelativeTo(null);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -69,6 +95,8 @@ public class HomeDashboard extends JFrame {
 	 * Create the frame.
 	 */
 	public HomeDashboard() {
+		connect.Connect();
+		readData();
 		setResizable(false);
 		setBounds(100, 100, 1000, 650);
 		setUndecorated(true);
@@ -132,6 +160,9 @@ public class HomeDashboard extends JFrame {
 		JButton btnAddAdmin = new JButton("Add Admin");
 		btnAddAdmin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				AddAdminModal frame = new AddAdminModal();
+				frame.setVisible(true);
+				frame.setLocationRelativeTo(null);
 			}
 		});
 		btnAddAdmin.setBounds(50, 57, 104, 32);
@@ -149,15 +180,7 @@ public class HomeDashboard extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(50, 100, 728, 468);
 		adminsPnl.add(scrollPane);
-		
-		adminTbl = new JTable();
-		adminTbl.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"New column", "New column", "New column", "New column"
-			}
-		));
+	
 		scrollPane.setViewportView(adminTbl);
 		
 		JLabel lblNavHome = new JLabel("Home", SwingConstants.CENTER);
@@ -202,16 +225,5 @@ public class HomeDashboard extends JFrame {
 		lblNavAdmins.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		sidePanel.add(lblNavAdmins);
 		
-//		JButton btnBlue = new JButton("Blue");
-//		btnBlue.setBounds(0, 254, 180, 46);
-//		sidePanel.add(btnBlue);
-//		
-//		JButton btnRed = new JButton("Red");
-//		btnRed.setBounds(0, 299, 180, 46);
-//		sidePanel.add(btnRed);
-//		
-//		JButton btnGreen = new JButton("Green");
-//		btnGreen.setBounds(0, 343, 180, 46);
-//		sidePanel.add(btnGreen);
 	}
 }
