@@ -3,6 +3,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import database.DBConnection;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JLabel;
@@ -144,11 +147,11 @@ public class Registration extends JFrame {
 				} else {
 					try {
 						connect.prep_stmt = connect.conn.prepareStatement(
-								"SELECT admin_username FROM admins WHERE admin_username = ? OR admin_email = ?");
+								"SELECT admin_username, admin_email FROM admins WHERE admin_username = ? OR admin_email = ?");
 						connect.prep_stmt.setString(1, Username);
 						connect.prep_stmt.setString(2, Email);
 						connect.resultSet = connect.prep_stmt.executeQuery();
-						// Checks if username already exist
+						// Checks if username or email already exist
 						if(connect.resultSet.next()) {
 							JOptionPane.showMessageDialog(new JFrame(), 
 									"Username OR Email Already Exist!", "Alert", JOptionPane.WARNING_MESSAGE);
@@ -172,7 +175,7 @@ public class Registration extends JFrame {
 								dispose();
 							} else {
 								JOptionPane.showMessageDialog(new JFrame(),
-										"Registration Error, Please Try Again!", "Alert", JOptionPane.WARNING_MESSAGE);
+										"Registration Error, Please Try Again!", "Error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					} catch (SQLException e1) {

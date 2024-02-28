@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -24,6 +26,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import database.DBConnection;
 import modals.AddAdminModal;
 
 public class HomeDashboard extends JFrame {
@@ -41,6 +44,7 @@ public class HomeDashboard extends JFrame {
 			connect.resultSet = connect.prep_stmt.executeQuery();
 			connect.rsmd = connect.resultSet.getMetaData();
 			DefaultTableModel model = (DefaultTableModel) adminTbl.getModel();
+			model.setRowCount(0); // Resets the row
 			
 			// Setting Column Names
 			int cols = connect.rsmd.getColumnCount();
@@ -163,6 +167,13 @@ public class HomeDashboard extends JFrame {
 				AddAdminModal frame = new AddAdminModal();
 				frame.setVisible(true);
 				frame.setLocationRelativeTo(null);
+				frame.addWindowListener(new WindowAdapter() {
+					@Override
+		            public void windowClosed(WindowEvent e) {
+		                // This method is called when the window is closed.
+		                readData();
+		            }
+				});
 			}
 		});
 		btnAddAdmin.setBounds(50, 57, 104, 32);

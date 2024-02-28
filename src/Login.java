@@ -3,6 +3,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import database.DBConnection;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JButton;

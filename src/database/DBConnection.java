@@ -1,3 +1,4 @@
+package database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,10 +11,10 @@ import javax.swing.JOptionPane;
 
 public class DBConnection {
 	// Declaring SQL classes
-	Connection conn = null;
-	PreparedStatement prep_stmt;
-	ResultSet resultSet;
-	ResultSetMetaData rsmd;
+	public Connection conn = null;
+	public PreparedStatement prep_stmt;
+	public ResultSet resultSet;
+	public ResultSetMetaData rsmd;
 	
 	// DB Credentials
 	private final String jdbcDriver = "com.mysql.cj.jdbc.Driver";
@@ -23,7 +24,7 @@ public class DBConnection {
 	private final String dbPassword = "";
 
 	
-	void Connect(){
+	public void Connect(){
 		try {
 			Class.forName(jdbcDriver);
 			conn = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
