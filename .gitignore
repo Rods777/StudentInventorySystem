@@ -1,7 +1,7 @@
 .metadata
 bin/
 tmp/
-.settings
+/.settings/
 .loadpath
 .recommenders
 local.properties
