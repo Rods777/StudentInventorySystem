@@ -101,14 +101,20 @@ public class Login extends JFrame {
 							JOptionPane.showMessageDialog(new JFrame(), 
 									"Username does not exist, Please sign up first!", "Error", JOptionPane.ERROR_MESSAGE);
 						} else {
+							int admin_id = connect.resultSet.getInt("admin_id");
+							String admin_username = connect.resultSet.getString("admin_username");
+							String admin_email = connect.resultSet.getString("admin_email");
 							String admin_password = connect.resultSet.getString("admin_password");
 							// Checks if password is correct
 							if(!passwordTxt.equals(admin_password)) {
 								JOptionPane.showMessageDialog(new JFrame(), 
 										"Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
 							} else {
-								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!!");
-								connect.conn.close();
+								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!");
+								HomeDashboard home = new HomeDashboard(admin_id, admin_username, admin_email);
+								home.setVisible(true);
+								home.setLocationRelativeTo(null);
+								dispose();
 							}
 						}
 					}
@@ -117,7 +123,7 @@ public class Login extends JFrame {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(new JFrame(), 
 							"An error occurred. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
-				} finally {	
+				} finally {
 					if(connect.resultSet != null || connect.prep_stmt != null) {
 						try {
 							connect.resultSet.close();

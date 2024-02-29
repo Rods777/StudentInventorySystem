@@ -42,6 +42,7 @@ public class DBConnection {
 		    System.out.println("VendorError: " + e.getErrorCode());
 			JOptionPane.showMessageDialog(null, 
 					"Connection Error: Please Connect to Database First!", "Error!", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 	}
 }
