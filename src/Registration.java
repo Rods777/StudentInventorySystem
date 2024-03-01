@@ -19,6 +19,9 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Registration extends JFrame {
 
@@ -92,41 +95,66 @@ public class Registration extends JFrame {
 		
 		JLabel lblUsername = new JLabel("Username");
 		lblUsername.setFont(new Font("Arial", Font.PLAIN, 15));
-		lblUsername.setBounds(253, 48, 87, 19);
+		lblUsername.setBounds(253, 27, 87, 19);
 		contentPane.add(lblUsername);
 		
 		txtUsername = new JTextField();
-		txtUsername.setBounds(253, 78, 308, 30);
+		txtUsername.setBounds(253, 57, 308, 30);
 		contentPane.add(txtUsername);
 		txtUsername.setColumns(10);
 		
 		JLabel lblEmail = new JLabel("Email");
 		lblEmail.setFont(new Font("Arial", Font.PLAIN, 15));
-		lblEmail.setBounds(253, 119, 87, 19);
+		lblEmail.setBounds(253, 98, 87, 19);
 		contentPane.add(lblEmail);
 		
 		txtEmail = new JTextField();
 		txtEmail.setColumns(10);
-		txtEmail.setBounds(253, 149, 308, 30);
+		txtEmail.setBounds(253, 128, 308, 30);
 		contentPane.add(txtEmail);
 		
 		JLabel lblPassword = new JLabel("Password");
 		lblPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-		lblPassword.setBounds(253, 190, 87, 19);
+		lblPassword.setBounds(253, 169, 87, 19);
 		contentPane.add(lblPassword);
 		
 		txtPre_password = new JPasswordField();
-		txtPre_password.setBounds(253, 220, 308, 30);
+		txtPre_password.setFont(new Font("Arial", Font.PLAIN, 12));
+		txtPre_password.setBounds(253, 199, 308, 30);
+		txtPre_password.setEchoChar('\u25CF');
 		contentPane.add(txtPre_password);
 		
 		JLabel lblReenterPassword = new JLabel("Re-Enter Password");
 		lblReenterPassword.setFont(new Font("Arial", Font.PLAIN, 15));
-		lblReenterPassword.setBounds(253, 261, 142, 19);
+		lblReenterPassword.setBounds(253, 240, 142, 19);
 		contentPane.add(lblReenterPassword);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(253, 291, 308, 30);
+		txtPassword.setFont(new Font("Arial", Font.PLAIN, 12));
+		txtPassword.setEchoChar('\u25CF');
+		txtPassword.setBounds(253, 270, 308, 30);
 		contentPane.add(txtPassword);
+		
+		JCheckBox chckbxShow = new JCheckBox("Show");
+		chckbxShow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(chckbxShow.isSelected()) {
+					// show pass
+					txtPassword.setEchoChar((char) 0);
+					txtPre_password.setEchoChar((char) 0);
+				} else {
+					// hide
+					txtPre_password.setEchoChar('\u25CF');
+					txtPassword.setEchoChar('\u25CF');
+				}
+			}
+		});
+		chckbxShow.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+		chckbxShow.setFocusable(false);
+		chckbxShow.setBackground((Color) null);
+		chckbxShow.setBounds(504, 307, 57, 25);
+		contentPane.add(chckbxShow);
 		
 		JButton btnSignUp = new JButton("SIGN UP");
 		btnSignUp.setFont(new Font("Arial", Font.BOLD, 18));
@@ -204,14 +232,14 @@ public class Registration extends JFrame {
 		btnSignUp.setBorder(null);
 		btnSignUp.setBackground(new Color(0, 255, 127));
 		btnSignUp.setForeground(new Color(255, 255, 255));
-		btnSignUp.setBounds(253, 347, 308, 40);
+		btnSignUp.setBounds(253, 351, 308, 40);
 		btnSignUp.setFocusable(false);
 		btnSignUp.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Hand Cursor
 		contentPane.add(btnSignUp);
 		
 		JLabel lblHaveAcc = new JLabel("Already have an Account?");
 		lblHaveAcc.setFont(new Font("Arial", Font.PLAIN, 12));
-		lblHaveAcc.setBounds(299, 423, 142, 14);
+		lblHaveAcc.setBounds(299, 431, 142, 14);
 		contentPane.add(lblHaveAcc);
 		
 		JButton btnSignIn = new JButton("Click Here");
@@ -225,7 +253,7 @@ public class Registration extends JFrame {
 		});
 		btnSignIn.setBorder(null);
 		btnSignIn.setFont(new Font("Arial", Font.BOLD, 12));
-		btnSignIn.setBounds(438, 419, 67, 23);
+		btnSignIn.setBounds(438, 427, 67, 23);
         btnSignIn.setBorder(null);
         btnSignIn.setBorderPainted(false);
         btnSignIn.setContentAreaFilled(false);
@@ -233,5 +261,6 @@ public class Registration extends JFrame {
         btnSignIn.setOpaque(false);
         btnSignIn.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Hand Cursor
 		contentPane.add(btnSignIn);
+		
 	}
 }

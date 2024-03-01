@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import javax.swing.border.MatteBorder;
 
 import database.DBConnection;
+import javax.swing.JCheckBox;
 
 
 public class AddAdminModal extends JFrame {
@@ -61,7 +62,7 @@ public class AddAdminModal extends JFrame {
 		connect.Connect();
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 560);
+		setBounds(100, 100, 450, 575);
 		contentPane = new JPanel();
 		contentPane.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(192, 192, 192)));
 
@@ -104,7 +105,9 @@ public class AddAdminModal extends JFrame {
 		contentPane.add(lblNewLabel_1_1_1);
 		
 		pre_passwordTxt = new JPasswordField();
+		pre_passwordTxt.setFont(new Font("Arial", Font.PLAIN, 12));
 		pre_passwordTxt.setBounds(35, 296, 380, 37);
+		pre_passwordTxt.setEchoChar('\u25CF');
 		contentPane.add(pre_passwordTxt);
 		
 		JLabel lblNewLabel_1_1_1_1 = new JLabel("Re-Enter Password");
@@ -113,8 +116,31 @@ public class AddAdminModal extends JFrame {
 		contentPane.add(lblNewLabel_1_1_1_1);
 		
 		passwordTxt = new JPasswordField();
+		passwordTxt.setFont(new Font("Arial", Font.PLAIN, 12));
 		passwordTxt.setBounds(35, 381, 380, 37);
+		passwordTxt.setEchoChar('\u25CF');
 		contentPane.add(passwordTxt);
+		
+		JCheckBox chckbxShow = new JCheckBox("Show");
+		chckbxShow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(chckbxShow.isSelected()) {
+					// show pass
+					pre_passwordTxt.setEchoChar((char) 0);
+					passwordTxt.setEchoChar((char) 0);
+				} else {
+					// hide
+					pre_passwordTxt.setEchoChar('\u25CF');
+					passwordTxt.setEchoChar('\u25CF');
+				}
+			}
+		});
+		chckbxShow.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+		chckbxShow.setFocusable(false);
+		chckbxShow.setBackground((Color) null);
+		chckbxShow.setBounds(358, 425, 57, 25);
+		contentPane.add(chckbxShow);
 		
 		JButton btnSubmit = new JButton("SUBMIT");
 		btnSubmit.addActionListener(new ActionListener() {
@@ -169,7 +195,7 @@ public class AddAdminModal extends JFrame {
 		btnSubmit.setFocusable(false);
 		btnSubmit.setBorder(null);
 		btnSubmit.setBackground(new Color(0, 255, 127));
-		btnSubmit.setBounds(18, 469, 414, 51);
+		btnSubmit.setBounds(18, 484, 414, 51);
 		btnSubmit.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		contentPane.add(btnSubmit);
 		
