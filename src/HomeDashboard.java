@@ -38,6 +38,7 @@ public class HomeDashboard extends JFrame {
 	private JPanel contentPane;
 	private JTextField searchTxt;
 	private JTable adminTbl = new JTable();
+	private DefaultTableModel model = (DefaultTableModel) adminTbl.getModel();
 	private DBConnection connect = new DBConnection();
 	
 	public void readData() {
@@ -46,7 +47,6 @@ public class HomeDashboard extends JFrame {
 					"SELECT * FROM admins");
 			connect.resultSet = connect.prep_stmt.executeQuery();
 			connect.rsmd = connect.resultSet.getMetaData();
-			DefaultTableModel model = (DefaultTableModel) adminTbl.getModel();
 			model.setRowCount(0); // Resets the row
 			
 			// Setting Column Names
@@ -70,6 +70,42 @@ public class HomeDashboard extends JFrame {
 			}
 			
 
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void searchData(String searchTxt) {
+		try {
+			connect.prep_stmt = connect.conn.prepareStatement("SELECT * FROM admins WHERE "
+					+ "admin_id LIKE ? OR admin_username LIKE ? OR admin_email LIKE ?");
+			connect.prep_stmt.setString(1, "%"+searchTxt+"%");
+			connect.prep_stmt.setString(2, "%"+searchTxt+"%");
+			connect.prep_stmt.setString(3, "%"+searchTxt+"%");
+			connect.resultSet = connect.prep_stmt.executeQuery();			
+			model.setRowCount(0); // Resets the row
+			
+			// Checks for match Results
+			if(!connect.resultSet.next()) {
+				JOptionPane.showMessageDialog(this, "No results match your search", "Error", JOptionPane.ERROR_MESSAGE);
+				readData();
+			} else {
+				// Iterate each row
+				String admin_id, admin_username, admin_email, admin_password;
+				do {
+					admin_id = connect.resultSet.getString(1);
+					admin_username = connect.resultSet.getString(2);
+					admin_email = connect.resultSet.getString(3);
+					admin_password = connect.resultSet.getString(4);
+					
+					String[] row = {admin_id, admin_username, admin_email, admin_password};
+					model.addRow(row);
+				} while(connect.resultSet.next());
+			}
+			
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -213,6 +249,12 @@ public class HomeDashboard extends JFrame {
 				searchTxt.setColumns(10);
 				
 				JButton btnSearch = new JButton("Search");
+				btnSearch.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String search = searchTxt.getText();
+						searchData(search);
+					}
+				});
 				btnSearch.setBounds(699, 57, 75, 32);
 				adminsPnl.add(btnSearch);
 				
