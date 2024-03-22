@@ -20,6 +20,9 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Login extends JFrame {
 
@@ -78,8 +81,29 @@ public class Login extends JFrame {
 		contentPane.add(lblPassword);
 		
 		txtPassword = new JPasswordField();
+		txtPassword.setFont(new Font("Arial", Font.PLAIN, 12));
 		txtPassword.setBounds(26, 191, 308, 30);
+		txtPassword.setEchoChar('\u25CF');
 		contentPane.add(txtPassword);
+		
+		JCheckBox chckbxShow = new JCheckBox("Show");
+		chckbxShow.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(chckbxShow.isSelected()) {
+					// show pass
+					txtPassword.setEchoChar((char) 0);
+				} else {
+					// hide
+					txtPassword.setEchoChar('\u25CF');
+				}
+			}
+		});
+		chckbxShow.setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+		chckbxShow.setFocusable(false);
+		chckbxShow.setBackground(null);
+		chckbxShow.setBounds(277, 228, 57, 25);
+		contentPane.add(chckbxShow);
 		
 		JButton btnSignIn = new JButton("SIGN IN");
 		btnSignIn.addActionListener(new ActionListener() {
@@ -111,7 +135,7 @@ public class Login extends JFrame {
 										"Password is Incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
 							} else {
 								JOptionPane.showMessageDialog(new JFrame(), "You Successfully Logged In!");
-								HomeDashboard home = new HomeDashboard(admin_id, admin_username, admin_email);
+								HomeDashboard home = new HomeDashboard(admin_id, admin_username, admin_email, admin_password);
 								home.setVisible(true);
 								home.setLocationRelativeTo(null);
 								dispose();
@@ -149,7 +173,7 @@ public class Login extends JFrame {
 		btnSignIn.setFocusable(false);
 		btnSignIn.setBorder(null);
 		btnSignIn.setBackground(new Color(0, 255, 127));
-		btnSignIn.setBounds(26, 263, 308, 40);
+		btnSignIn.setBounds(26, 268, 308, 40);
 		btnSignIn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		contentPane.add(btnSignIn);
 		
@@ -201,5 +225,6 @@ public class Login extends JFrame {
 		JLabel lblIcon = new JLabel(icon);
 		lblIcon.setBounds(58, 88, 116, 111);
 		sidePanel.add(lblIcon);
+		
 	}
 }
